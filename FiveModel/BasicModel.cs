@@ -87,7 +87,7 @@ namespace FiveModel
         /// <summary>
         /// 收益 数组，第一个为本年度，第二个为明年预测  (6,4)
         /// </summary>
-        public int sys { get; set; }
+        public int[] sys { get; set; }
 
         /// <summary>
         /// 推荐标题

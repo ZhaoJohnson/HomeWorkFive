@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeWorkFive", "HomeWorkFiv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiveModel", "FiveModel\FiveModel.csproj", "{99EC4EEB-750B-4D0C-A6A9-E481B2F8EE09}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiveDataLayer", "FiveDataLayer\FiveDataLayer.csproj", "{6F04265A-E679-4D97-A2AF-6BBC1142E46D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{99EC4EEB-750B-4D0C-A6A9-E481B2F8EE09}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99EC4EEB-750B-4D0C-A6A9-E481B2F8EE09}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99EC4EEB-750B-4D0C-A6A9-E481B2F8EE09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F04265A-E679-4D97-A2AF-6BBC1142E46D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F04265A-E679-4D97-A2AF-6BBC1142E46D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F04265A-E679-4D97-A2AF-6BBC1142E46D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F04265A-E679-4D97-A2AF-6BBC1142E46D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
