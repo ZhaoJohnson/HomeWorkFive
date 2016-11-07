@@ -47,13 +47,13 @@
   <ItemGroup>
     <Compile Include="AttributeModel\PrimaryKeyAttribute.cs" />
     <Compile Include="DAO\BasicDao.cs" />
-    <Compile Include="DAO\InstitutionModelDao.cs" />
     <Compile Include="DAO\StockModelDao.cs" />
     <Compile Include="DAO\StockMarketDao.cs" />
     <Compile Include="DAO\StockReportModelDao.cs" />
+    <Compile Include="DAO\StockOperationTrackingDao.cs" />
     <Compile Include="DAO\StockTypeDao.cs" />
     <Compile Include="DbHelper.cs" />
-    <Compile Include="DbModel\Institution.cs" />
+    <Compile Include="DbModel\StockOperationTracking.cs" />
     <Compile Include="DbModel\StockReport.cs" />
     <Compile Include="DbModel\Stock.cs" />
     <Compile Include="DbModel\StockType.cs" />

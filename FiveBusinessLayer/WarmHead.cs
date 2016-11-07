@@ -1,20 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FiveCommonLayer;
+﻿using FiveCommonLayer;
 using FiveDataLayer.DAO;
 using FiveDataLayer.DbModel;
 using FiveModel;
 using FiveModel.WebModel;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace FiveBusinessLayer
 {
     public class WarmHead
     {
         private static StockMarketDao Dao = new StockMarketDao();
-
+        private static int allpage;
+        private static bool isGoOn = true;
+        private static object LockForPage = new object();
+        private static bool isGoingPage = true;
+        private static bool TheadLock = true;
 
         public void FirstOfAll()
         {
@@ -27,9 +31,53 @@ namespace FiveBusinessLayer
             Htmlsb.Append($"&ps={datarows}");
             Htmlsb.Append($"&p={page}");
             Htmlsb.Append("&mkt=0&stat=0&cmd=2&code=");
-            var data= GetEmDataModelByUrl(Htmlsb.ToString());
-            double pages =  (data.Count/10);
-            int allpage = int.Parse(Math.Ceiling(pages).ToString());
+            var data = GetEmDataModelByUrl(Htmlsb.ToString());
+            double pages = (data.Count / 20);
+            allpage = int.Parse(Math.Ceiling(pages).ToString());
+            Console.WriteLine($"共计：{allpage}页");
+            StockOperationTracking stockoperation = new StockOperationTracking()
+            {
+                StockCount = data.Count,
+                OperationDate = data.update,
+                CreatedAt = DateTimeOffset.Now
+            };
+            Dao.StockOperationTrackingDao.Add(stockoperation);
+        }
+
+        public void WarmStar()
+        {
+            List<Task> taskList = new List<Task>();
+            TaskFactory taskFactory = new TaskFactory();
+            int datarows = 50;
+            int page = 1;
+            do
+            {
+                lock (LockForPage)
+                {
+                    StringBuilder Htmlsb = new StringBuilder();
+                    Htmlsb.Append(
+                        "http://datainterface.eastmoney.com//EM_DataCenter/js.aspx?type=SR&sty=GGSR&js=var%20{jsname}=");
+                    Htmlsb.Append("{\"data\":[(x)],\"pages\":\"(pc)\",\"update\":\"(ud)\",\"count\":\"(count)\"}");
+                    Htmlsb.Append($"&ps={datarows}");
+                    Htmlsb.Append($"&p={page}");
+                    Htmlsb.Append("&mkt=0&stat=0&cmd=2&code=");
+                    taskList.Add(taskFactory.StartNew(() => GetEmJson(Htmlsb.ToString())));
+                    if (taskList.Count > 5)
+                    {
+                        isGoingPage = false;
+                        taskList = taskList.Where(t => !t.IsCompleted && !t.IsCanceled && !t.IsFaulted).ToList();
+                        Task.WaitAny(taskList.ToArray());
+                        isGoingPage = true;
+                    }
+                    if (page < allpage)
+                        page++;
+                    if (page == allpage)
+                    {
+                        Task.WaitAll(taskList.ToArray());
+                        TheadLock = false;
+                    }
+                }
+            } while (TheadLock);
         }
 
         //private static Dictionary<string,DateTime> StockCodes =new List<string>();
@@ -53,7 +101,6 @@ namespace FiveBusinessLayer
 
         private void buildModel(EmDataDetailModel emDataDetailModel)
         {
-
             Stock stock = new Stock();
             stock.IsActivity = true;
             stock.CreatedAt = DateTimeOffset.Now;
@@ -69,9 +116,11 @@ namespace FiveBusinessLayer
                 case "SZ":
                     stock.StockTypeId = 2;
                     break;
+
                 case "SH":
                     stock.StockTypeId = 1;
                     break;
+
                 default:
                     throw new Exception("怎么可能");
             }
@@ -80,30 +129,23 @@ namespace FiveBusinessLayer
             StockReport stockReport = new StockReport();
             stockReport.Author = emDataDetailModel.author;
             stockReport.Change = emDataDetailModel.change;
-            stockReport.Companycode = emDataDetailModel.companyCode;
+            stockReport.Companycode = emDataDetailModel.companyCode ?? null;
             stockReport.ReportTime = emDataDetailModel.datetime;
             stockReport.Infocode = emDataDetailModel.infoCode;
             stockReport.InsCode = emDataDetailModel.insCode;
             stockReport.InsName = emDataDetailModel.insName;
-            stockReport.InsStar = emDataDetailModel.insStar;
+            stockReport.InsStar = emDataDetailModel.insStar ?? null;
             stockReport.Rate = emDataDetailModel.rate;
             stockReport.StockCodeId = stock.StockCodeId;
             stockReport.Title = emDataDetailModel.title;
             stockReport.SratingName = emDataDetailModel.sratingName;
-            stockReport.NewPrice = emDataDetailModel.newPrice;
-            stockReport.FutureProfit = emDataDetailModel.sy;
-            Institution institution = new Institution()
-            {
-                CreatedAt = DateTimeOffset.Now,
-                LastModifiedAt = DateTimeOffset.Now,
-                InstitutionCode = emDataDetailModel.insCode,
-                InstitutionName = emDataDetailModel.insName,
-                InstitutionStar = emDataDetailModel.insStar
-            };
-            SaveEmData(stock, stockReport, institution);
+            stockReport.NewPrice = emDataDetailModel.newPrice ?? null;
+            //stockReport.FutureProfit = emDataDetailModel.sy;
+
+            SaveEmData(stock, stockReport);
         }
 
-        private void SaveEmData(Stock stock, StockReport stockReport, Institution institution)
+        private void SaveEmData(Stock stock, StockReport stockReport)
         {
             try
             {
@@ -115,18 +157,17 @@ namespace FiveBusinessLayer
                 else
                 {
                     Dao.StockModelDao.Add(stock);
-                    AddNewStockData(stock, stockReport, institution);
+                    AddNewStockData(stock, stockReport);
                     // StockCodes.Add(stock.StockCodeId);
                 }
             }
             catch (Exception ex)
             {
-                    MyLog.OutputAndSaveTxt(ex.Message);
+                MyLog.OutputAndSaveTxt(ex.Message);
             }
-           
         }
 
-        private void AddNewStockData(Stock stock, StockReport stockReport, Institution institution)
+        private void AddNewStockData(Stock stock, StockReport stockReport)
         {
             Dao.StockReportModelDao.Add(stockReport);
         }

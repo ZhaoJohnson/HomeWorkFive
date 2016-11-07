@@ -21,7 +21,7 @@ namespace FiveModel
         /// <summary>
         ///
         /// </summary>
-        public int companyCode { get; set; }
+        public int? companyCode { get; set; }
 
         /// <summary>
         /// 发布日期
@@ -46,7 +46,7 @@ namespace FiveModel
         /// <summary>
         /// 推荐券商级别
         /// </summary>
-        public int insStar { get; set; }
+        public int? insStar { get; set; }
 
         /// <summary>
         /// 没什么用 int.p
@@ -77,7 +77,7 @@ namespace FiveModel
         /// <summary>
         /// 没什么用
         /// </summary>
-        public decimal sy { get; set; }
+        //public decimal sy { get; set; }
 
         /// <summary>
         /// 市盈率 数组，第一个为本年度，第二个为明年预测  (4,2)
@@ -97,13 +97,13 @@ namespace FiveModel
         /// <summary>
         /// 年报
         /// </summary>
-        public int profitYear { get; set; }
+        public int? profitYear { get; set; }
 
-        public int type { get; set; }
+        public int? type { get; set; }
 
         /// <summary>
         /// 最新价格
         /// </summary>
-        public decimal newPrice { get; set; }
+        public decimal? newPrice { get; set; }
     }
 }
