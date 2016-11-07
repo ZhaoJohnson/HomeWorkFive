@@ -28,7 +28,8 @@ namespace FiveBusinessLayer
             Htmlsb.Append($"&p={page}");
             Htmlsb.Append("&mkt=0&stat=0&cmd=2&code=");
             var data= GetEmDataModelByUrl(Htmlsb.ToString());
-            
+            double pages =  (data.Count/10);
+            int allpage = int.Parse(Math.Ceiling(pages).ToString());
         }
 
         //private static Dictionary<string,DateTime> StockCodes =new List<string>();
