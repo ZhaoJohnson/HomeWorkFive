@@ -10,13 +10,13 @@ namespace FiveDataLayer.DAO
         where TDbContext : DbHelper, new()
         where TPo : class, new()
     {
-        protected BasicDao()
+        protected BasicDao(TDbContext dbContext)
         {
-            this.DbContext =new TDbContext();
+            this.DbContext = dbContext;
         }
         protected readonly TDbContext DbContext;
 
-        public IEnumerable<TPo> GetData()
+        public virtual IEnumerable<TPo> GetData()
         {
             return this.DbContext.GetData<TPo>();
         }

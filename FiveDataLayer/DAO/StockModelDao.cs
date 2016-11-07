@@ -8,13 +8,16 @@ using FiveDataLayer.DbModel;
 
 namespace FiveDataLayer.DAO
 {
-    public class StockModelDao : BasicDao<DbHelper, StockModel>
+    public class StockModelDao : BasicDao<DbHelper, Stock>
     {
 
-        protected DbHelper dbContext;
-        public StockModelDao() : base()
+        public Stock GetStockCodeByCode(string codeId)
         {
-            this.dbContext= new DbHelper(ConfigurationManager.ConnectionStrings["StockMarket"].ConnectionString);
+           return this.DbContext.GetData<Stock>(codeId);
+        }
+
+        public StockModelDao(DbHelper dbContext) : base(dbContext)
+        {
         }
     }
 }

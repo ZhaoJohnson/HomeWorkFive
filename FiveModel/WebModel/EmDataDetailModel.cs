@@ -36,7 +36,7 @@ namespace FiveModel
         /// <summary>
         /// 推荐券商ID
         /// </summary>
-        public int insCode { get; set; }
+        public string insCode { get; set; }
 
         /// <summary>
         /// 推荐券商名称

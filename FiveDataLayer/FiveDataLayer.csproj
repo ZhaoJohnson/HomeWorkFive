@@ -53,10 +53,10 @@
     <Compile Include="DAO\StockReportModelDao.cs" />
     <Compile Include="DAO\StockTypeDao.cs" />
     <Compile Include="DbHelper.cs" />
-    <Compile Include="DbModel\InstitutionModel.cs" />
-    <Compile Include="DbModel\StockReportModel.cs" />
-    <Compile Include="DbModel\StockModel.cs" />
-    <Compile Include="DbModel\StockTypeModel.cs" />
+    <Compile Include="DbModel\Institution.cs" />
+    <Compile Include="DbModel\StockReport.cs" />
+    <Compile Include="DbModel\Stock.cs" />
+    <Compile Include="DbModel\StockType.cs" />
     <Compile Include="IDbHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

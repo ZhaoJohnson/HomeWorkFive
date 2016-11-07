@@ -7,8 +7,10 @@ using FiveDataLayer.DbModel;
 
 namespace FiveDataLayer.DAO
 {
-    public class StockReportModelDao: BasicDao<DbHelper,StockReportModel>
+    public class StockReportModelDao: BasicDao<DbHelper,StockReport>
     {
-        
+        public StockReportModelDao(DbHelper dbContext) : base(dbContext)
+        {
+        }
     }
 }

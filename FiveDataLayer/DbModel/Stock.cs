@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FiveDataLayer.AttributeModel;
 
 namespace FiveDataLayer.DbModel
 {
-    public class StockModel
+    public class Stock
     {
-        public int StockCode { get; set; }
+        [PrimaryKey(false)]
+        public string StockCodeId { get; set; }
         public string StockName { get; set; }
         public int StockTypeId { get; set; }
         public bool IsActivity { get; set; }

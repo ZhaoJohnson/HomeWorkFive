@@ -7,9 +7,10 @@ using FiveDataLayer.DbModel;
 
 namespace FiveDataLayer.DAO
 {
-    public class InstitutionModelDao : BasicDao<DbHelper, InstitutionModel>
+    public class InstitutionModelDao : BasicDao<DbHelper, Institution>
     {
-       
-
+        public InstitutionModelDao(DbHelper dbContext) : base(dbContext)
+        {
+        }
     }
 }
