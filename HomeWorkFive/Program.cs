@@ -16,17 +16,7 @@ namespace HomeWorkFive
 
             try
             {
-                int datarows = 1;
-                int page = 1;
-                StringBuilder Htemlsb=new StringBuilder();
-                Htemlsb.Append(
-                    "http://datainterface.eastmoney.com//EM_DataCenter/js.aspx?type=SR&sty=GGSR&js=var%20{jsname}=");
-                Htemlsb.Append("{\"data\":[(x)],\"pages\":\"(pc)\",\"update\":\"(ud)\",\"count\":\"(count)\"}");
-                Htemlsb.Append($"&ps={datarows}");
-                Htemlsb.Append($"&p={page}");
-                Htemlsb.Append("&mkt=0&stat=0&cmd=2&code=");
-                WarmHead warmHead=new WarmHead();
-                warmHead.GetEmJson(Htemlsb.ToString());
+                ActionWarm();
             }
             catch (Exception ex)
             {
@@ -34,6 +24,12 @@ namespace HomeWorkFive
                 //throw;
             }
 
+        }
+
+        static void ActionWarm()
+        {
+            WarmHead warmHead = new WarmHead();
+            //warmHead.GetEmJson(ng());
         }
     }
 }

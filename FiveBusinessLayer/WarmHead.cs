@@ -13,13 +13,28 @@ namespace FiveBusinessLayer
 {
     public class WarmHead
     {
-        private static StockMarketDao Dao=new StockMarketDao();
+        private static StockMarketDao Dao = new StockMarketDao();
+
+
+        public void FirstOfAll()
+        {
+            int datarows = 1;
+            int page = 1;
+            StringBuilder Htmlsb = new StringBuilder();
+            Htmlsb.Append(
+                "http://datainterface.eastmoney.com//EM_DataCenter/js.aspx?type=SR&sty=GGSR&js=var%20{jsname}=");
+            Htmlsb.Append("{\"data\":[(x)],\"pages\":\"(pc)\",\"update\":\"(ud)\",\"count\":\"(count)\"}");
+            Htmlsb.Append($"&ps={datarows}");
+            Htmlsb.Append($"&p={page}");
+            Htmlsb.Append("&mkt=0&stat=0&cmd=2&code=");
+            var data= GetEmDataModelByUrl(Htmlsb.ToString());
+            
+        }
+
         //private static Dictionary<string,DateTime> StockCodes =new List<string>();
         public void GetEmJson(string url)
         {
-            var html = HttpHelper.DownloadCommodity(url);
-            var datajson = ReBuildData(html);
-            EmDataModel data = MyJsonHelper.Json2ObjectByString<EmDataModel>(datajson);
+            var data = GetEmDataModelByUrl(url);
             //List<EmDataDetailModel> listDetailModels = new List<EmDataDetailModel>();
             foreach (EmDataDetailModel item in data.data)
             {
@@ -27,6 +42,13 @@ namespace FiveBusinessLayer
             }
         }
 
+        private EmDataModel GetEmDataModelByUrl(string url)
+        {
+            var html = HttpHelper.DownloadCommodity(url);
+            var datajson = ReBuildData(html);
+            EmDataModel data = MyJsonHelper.Json2ObjectByString<EmDataModel>(datajson);
+            return data;
+        }
 
         private void buildModel(EmDataDetailModel emDataDetailModel)
         {
