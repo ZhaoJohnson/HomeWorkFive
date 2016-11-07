@@ -61,14 +61,15 @@ namespace FiveBusinessLayer
                     Htmlsb.Append($"&ps={datarows}");
                     Htmlsb.Append($"&p={page}");
                     Htmlsb.Append("&mkt=0&stat=0&cmd=2&code=");
-                    taskList.Add(taskFactory.StartNew(() => GetEmJson(Htmlsb.ToString())));
-                    if (taskList.Count > 5)
-                    {
-                        isGoingPage = false;
-                        taskList = taskList.Where(t => !t.IsCompleted && !t.IsCanceled && !t.IsFaulted).ToList();
-                        Task.WaitAny(taskList.ToArray());
-                        isGoingPage = true;
-                    }
+                    GetEmJson(Htmlsb.ToString());
+                    // taskList.Add(taskFactory.StartNew(() => GetEmJson(Htmlsb.ToString())));
+                    //if (taskList.Count > 5)
+                    //{
+                    //    isGoingPage = false;
+                    //    taskList = taskList.Where(t => !t.IsCompleted && !t.IsCanceled && !t.IsFaulted).ToList();
+                    //    Task.WaitAny(taskList.ToArray());
+                    //    isGoingPage = true;
+                    //}
                     if (page < allpage)
                         page++;
                     if (page == allpage)

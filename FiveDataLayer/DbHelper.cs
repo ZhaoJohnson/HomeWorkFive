@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FiveDataLayer.AttributeModel;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -7,17 +8,19 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using FiveDataLayer.AttributeModel;
 
 namespace FiveDataLayer
 {
     public class DbHelper
     {
+        private static object sqlLock = new object();
+
         public DbHelper(string ConnectionStrings)
         {
             this.StrConn = ConnectionStrings;
         }
-        readonly string StrConn;
+
+        private readonly string StrConn;
 
         public DbHelper()
         {
@@ -25,6 +28,7 @@ namespace FiveDataLayer
         }
 
         private static bool PrimaryisIdentity = false;
+
         /// <summary>
         /// 获取单表所有
         /// </summary>
@@ -47,6 +51,7 @@ namespace FiveDataLayer
             }
             return result;
         }
+
         /// <summary>
         /// 获取单表所有
         /// </summary>
@@ -57,10 +62,11 @@ namespace FiveDataLayer
             //1.初始化
             T singleT = new T();
             IList<T> result = new List<T>();
+            bool isIdentity;
             string primeryKey = string.Empty;
             foreach (var info in singleT.GetType().GetProperties())
             {
-                primeryKey = GetPrimeryKey(info);
+                primeryKey = GetPrimeryKey(info, out isIdentity);
                 if (!string.IsNullOrEmpty(primeryKey)) break;
             }
             if (string.IsNullOrEmpty(primeryKey)) primeryKey = "*";
@@ -75,6 +81,7 @@ namespace FiveDataLayer
             }
             return result.FirstOrDefault();
         }
+
         /// <summary>
         /// 根据ID查询
         /// </summary>
@@ -87,9 +94,10 @@ namespace FiveDataLayer
             T singleT = new T();
             IList<T> result = new List<T>();
             string primeryKey = string.Empty;
+            bool isIdentity;
             foreach (var info in singleT.GetType().GetProperties())
             {
-                primeryKey = GetPrimeryKey(info);
+                primeryKey = GetPrimeryKey(info, out isIdentity);
             }
             //2.锁定表名
             var tblName = $"{typeof(T).Name}";
@@ -112,9 +120,12 @@ namespace FiveDataLayer
         public bool Add<T>(T addModel)
         {
             string sbSql = string.Empty;
-            List<SqlParameter> listPar = buildSql(addModel, SQLType.Insert, out sbSql);
-            return MainSql(sbSql, listPar);
+            List<SqlParameter> listparms = new List<SqlParameter>();
+            //List<SqlParameter> listPar = buildSql(addModel, SQLType.Insert, out sbSql);
+            sbSql = AddSql(addModel, out listparms);
+            return MainSql(sbSql, listparms);
         }
+
         /// <summary>
         /// 更新数据
         /// </summary>
@@ -127,6 +138,7 @@ namespace FiveDataLayer
             List<SqlParameter> listPar = buildSql(updateModel, SQLType.Update, out sbSql);
             return MainSql(sbSql, listPar);
         }
+
         /// <summary>
         /// 移除数据
         /// </summary>
@@ -164,16 +176,16 @@ namespace FiveDataLayer
                     Console.WriteLine(DateTime.Now);
                     throw ex.InnerException;
                 }
-
             }
             return result;
         }
-        /// <summary>  
-        /// 判断SqlDataReader是否存在某列  
-        /// </summary>  
-        /// <param name="dr">SqlDataReader</param>  
-        /// <param name="columnName">列名</param>  
-        /// <returns></returns>  
+
+        /// <summary>
+        /// 判断SqlDataReader是否存在某列
+        /// </summary>
+        /// <param name="dr">SqlDataReader</param>
+        /// <param name="columnName">列名</param>
+        /// <returns></returns>
         private bool ColumnExists(SqlDataReader dr, string columnName)
         {
             //非空验证
@@ -183,8 +195,10 @@ namespace FiveDataLayer
             //确认是否找到
             return (dr.GetSchemaTable().DefaultView.Count > 0);
         }
-        private string GetPrimeryKey(PropertyInfo baseProperties)
+
+        private string GetPrimeryKey(PropertyInfo baseProperties, out bool isIdentitiy)
         {
+            isIdentitiy = false;
             string PrimaryKey = string.Empty;
             foreach (var item in baseProperties.GetCustomAttributes(false))
             {
@@ -192,12 +206,16 @@ namespace FiveDataLayer
                 {
                     PrimaryKeyAttribute IsKey = item as PrimaryKeyAttribute;
                     PrimaryKey = baseProperties.Name;
-                    if (IsKey.IsIdentity == true) PrimaryisIdentity = true;
+                    if (IsKey.IsIdentity == true)
+                    {
+                        isIdentitiy = true;
+                    }
                 }
             }
             if (string.IsNullOrEmpty(PrimaryKey)) return null;
             return PrimaryKey;
         }
+
         /// <summary>
         /// 生产SQL
         /// </summary>
@@ -208,37 +226,43 @@ namespace FiveDataLayer
         /// <returns></returns>
         private List<SqlParameter> buildSql<T>(T t, SQLType type, out string tsql)
         {
-            Dictionary<string, object> primeryKey = new Dictionary<string, object>();
-
-            var tblName = $"{typeof(T).Name}";
-            List<SqlParameter> listPar = new List<SqlParameter>();
-            List<string> keys = new List<string>();
-            //3.遍历泛型读取字段
-            foreach (PropertyInfo item in t.GetType().GetProperties())
+            lock (sqlLock)
             {
-                if (!string.IsNullOrEmpty(GetPrimeryKey(item)))
+                Dictionary<string, object> primeryKey = new Dictionary<string, object>();
+                var tblName = $"{typeof(T).Name}";
+                bool isIdentity;
+                List<SqlParameter> listPar = new List<SqlParameter>();
+                List<string> keys = new List<string>();
+                //3.遍历泛型读取字段
+                foreach (PropertyInfo item in t.GetType().GetProperties())
                 {
-                    primeryKey.Add(GetPrimeryKey(item), item.GetValue(t));
-                    continue;
+                    if (!string.IsNullOrEmpty(GetPrimeryKey(item, out isIdentity)))
+                    {
+                        primeryKey.Add(GetPrimeryKey(item, out isIdentity), item.GetValue(t));
+                        continue;
+                    }
+                    var value = item.GetValue(t);
+                    if (value == null) continue;
+                    SqlParameter par = new SqlParameter("@" + item.Name, value);
+                    listPar.Add(par);
+                    keys.Add(item.Name);
                 }
-                var value = item.GetValue(t);
-                if (value == null) continue;
-                SqlParameter par = new SqlParameter("@" + item.Name, value);
-                listPar.Add(par);
-                keys.Add(item.Name);
-            }
-            StringBuilder sbSql = new StringBuilder();
-            //4.拼接SQL
-            switch (type)
-            {
-                case SQLType.Insert:
-                    return InsertSql(out tsql, sbSql, tblName, keys, listPar,primeryKey);
-                case SQLType.Update:
-                    return UpdateSql(out tsql, primeryKey, listPar, sbSql, tblName, keys);
-                case SQLType.Delete:
-                    return DeleteSql(out tsql, primeryKey, listPar, sbSql, tblName);
-                default:
-                    break;
+                StringBuilder sbSql = new StringBuilder();
+                //4.拼接SQL
+                switch (type)
+                {
+                    case SQLType.Insert:
+                        return InsertSql(out tsql, sbSql, tblName, keys, listPar, primeryKey);
+
+                    case SQLType.Update:
+                        return UpdateSql(out tsql, primeryKey, listPar, sbSql, tblName, keys);
+
+                    case SQLType.Delete:
+                        return DeleteSql(out tsql, primeryKey, listPar, sbSql, tblName);
+
+                    default:
+                        break;
+                }
             }
             tsql = string.Empty;
             return null;
@@ -274,16 +298,54 @@ namespace FiveDataLayer
             return listPar;
         }
 
+        private string AddSql<T>(T t, out List<SqlParameter> parms)
+        {
+            bool isIdentity;
+            List<SqlParameter> listPar = new List<SqlParameter>();
+            List<string> keys = new List<string>();
+            Dictionary<string, object> primeryKey = new Dictionary<string, object>();
+            //3.遍历泛型读取字段
+            foreach (PropertyInfo item in t.GetType().GetProperties())
+            {
+                var value = item.GetValue(t);
+
+                if (!string.IsNullOrEmpty(GetPrimeryKey(item, out isIdentity)))
+                {
+                    if (isIdentity)
+                        continue;
+                    keys.Add(item.Name);
+                    SqlParameter keypar = new SqlParameter("@" + item.Name, item.GetValue(t));
+                    listPar.Add(keypar);
+                    continue;
+                }
+                SqlParameter par = new SqlParameter("@" + item.Name, value);
+                listPar.Add(par);
+                keys.Add(item.Name);
+            }
+
+            StringBuilder sbSql = new StringBuilder();
+            sbSql.Append($"INSERT INTO dbo.[{typeof(T).Name}]");
+            sbSql.Append("(");
+            string insertColumn = string.Join(",", keys.ToArray());
+            sbSql.Append(insertColumn);
+            sbSql.Append(")");
+            sbSql.Append("Values(@");
+            string parColumn = string.Join(",@", keys.ToArray());
+            sbSql.Append(parColumn);
+            sbSql.Append(")");
+            parms = listPar;
+            return sbSql.ToString();
+        }
+
         private static List<SqlParameter> InsertSql(out string tsql, StringBuilder sbSql, string tblName, List<string> keys, List<SqlParameter> listPar, Dictionary<string, object> primeryKey = null)
         {
-            if (primeryKey != null&&PrimaryisIdentity==false)
+            if (primeryKey != null)
             {
                 SqlParameter keypar = new SqlParameter("@" + primeryKey.FirstOrDefault().Key,
                 primeryKey[primeryKey.FirstOrDefault().Key]);
                 listPar.Add(keypar);
                 keys.Add(primeryKey.FirstOrDefault().Key);
             }
-
 
             sbSql.Append($"INSERT INTO dbo.[{tblName}]");
             sbSql.Append("(");
@@ -320,7 +382,7 @@ namespace FiveDataLayer
                         foreach (var item in singleResult.GetType().GetProperties())
                         {
                             string fieldName = item.Name; //属性名
-                            //6.赋值
+                                                          //6.赋值
                             if (ColumnExists(reader, fieldName))
                             {
                                 if (!item.CanWrite)
@@ -340,11 +402,11 @@ namespace FiveDataLayer
                 }
                 catch (Exception)
                 {
-
                     throw;
                 }
             }
         }
+
         /// <summary>
         /// 获取所有字段
         /// </summary>
@@ -358,7 +420,6 @@ namespace FiveDataLayer
 
         public void Dispose()
         {
-
         }
 
         public enum SQLType
