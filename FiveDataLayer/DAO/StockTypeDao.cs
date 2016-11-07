@@ -9,8 +9,6 @@ namespace FiveDataLayer.DAO
 {
     public class StockTypeDao : BasicDao<DbHelper, StockTypeModel>
     {
-        public StockTypeDao(DbHelper dbContext) : base(dbContext)
-        {
-        }
+       
     }
 }

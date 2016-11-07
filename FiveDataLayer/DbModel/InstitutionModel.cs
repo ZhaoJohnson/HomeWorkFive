@@ -11,7 +11,7 @@ namespace FiveDataLayer.DbModel
         public int InstitutionId { get; set; }
         public Nullable<int> InstitutionCode { get; set; }
         public string InstitutionName { get; set; }
-        public Nullable<short> InstitutionStar { get; set; }
+        public Nullable<int> InstitutionStar { get; set; }
         public Nullable<System.DateTimeOffset> CreatedAt { get; set; }
         public Nullable<System.DateTimeOffset> LastModifiedAt { get; set; }
     }

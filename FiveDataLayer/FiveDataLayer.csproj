@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>FiveDataLayer</RootNamespace>
     <AssemblyName>FiveDataLayer</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -47,7 +48,7 @@
     <Compile Include="AttributeModel\PrimaryKeyAttribute.cs" />
     <Compile Include="DAO\BasicDao.cs" />
     <Compile Include="DAO\InstitutionModelDao.cs" />
-    <Compile Include="DAO\StockDao.cs" />
+    <Compile Include="DAO\StockModelDao.cs" />
     <Compile Include="DAO\StockMarketDao.cs" />
     <Compile Include="DAO\StockReportModelDao.cs" />
     <Compile Include="DAO\StockTypeDao.cs" />

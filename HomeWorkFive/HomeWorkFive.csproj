@@ -51,6 +51,23 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="JavaScript1.js" />
+    <Content Include="LogConfig\log4net.cfg.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FiveBusinessLayer\FiveBusinessLayer.csproj">
+      <Project>{2fe31350-8375-442d-917d-f9e48767a432}</Project>
+      <Name>FiveBusinessLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FiveCommonLayer\FiveCommonLayer.csproj">
+      <Project>{b9578b7a-7469-4fa1-97ba-2ec946a28a96}</Project>
+      <Name>FiveCommonLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FiveModel\FiveModel.csproj">
+      <Project>{99ec4eeb-750b-4d0c-a6a9-e481b2f8ee09}</Project>
+      <Name>FiveModel</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -10,9 +10,9 @@ namespace FiveDataLayer.DAO
         where TDbContext : DbHelper, new()
         where TPo : class, new()
     {
-        protected BasicDao(TDbContext dbContext)
+        protected BasicDao()
         {
-            this.DbContext = dbContext;
+            this.DbContext =new TDbContext();
         }
         protected readonly TDbContext DbContext;
 

@@ -13,7 +13,7 @@ namespace FiveDataLayer.DbModel
         public string Author { get; set; }
         public string Change { get; set; }
         public Nullable<int> Companycode { get; set; }
-        public Nullable<System.DateTime> Datetime { get; set; }
+        public Nullable<System.DateTime> ReportTime { get; set; }
         public Nullable<int> InstitutionId { get; set; }
         public string Infocode { get; set; }
         public Nullable<int> InsCode { get; set; }

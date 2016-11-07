@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FiveModel
 {
-    public class BasicModel
+    public class EmDataDetailModel
     {
         /// <summary>
         /// 评委
@@ -49,10 +49,10 @@ namespace FiveModel
         public int insStar { get; set; }
 
         /// <summary>
-        /// 没什么用
+        /// 没什么用 int.p
         /// </summary>
 
-        public int[] jlrs { get; set; }
+        //public string[] jlrs { get; set; }
 
         /// <summary>
         /// 建议
@@ -82,12 +82,12 @@ namespace FiveModel
         /// <summary>
         /// 市盈率 数组，第一个为本年度，第二个为明年预测  (4,2)
         /// </summary>
-        public decimal[] syls { get; set; }
+        //public decimal[] syls { get; set; }
 
         /// <summary>
         /// 收益 数组，第一个为本年度，第二个为明年预测  (6,4)
         /// </summary>
-        public int[] sys { get; set; }
+        //public decimal[] sys { get; set; }
 
         /// <summary>
         /// 推荐标题

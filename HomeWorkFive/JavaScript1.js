@@ -1,4 +1,5 @@
-﻿// 显示到页面
+﻿<add key="EmData" value="http://datainterface.eastmoney.com//EM_DataCenter/js.aspx?type=SR&sty=GGSR&js=var%20{jsname}="/>
+// 显示到页面
 display: function (x) {
     x = (x != true) ? false : true;
     var _t = this,
