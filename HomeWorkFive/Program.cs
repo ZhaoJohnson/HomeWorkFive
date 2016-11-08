@@ -28,8 +28,9 @@ namespace HomeWorkFive
         private static void ActionWarm()
         {
             WarmHead warmHead = new WarmHead();
-            warmHead.FirstOfAll();
-            warmHead.WarmStar();
+            warmHead.forTest();
+            //warmHead.FirstOfAll();
+            //warmHead.WarmStar();
         }
     }
 }

@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
+using FiveDataLayer.DbModel;
 
 namespace FiveDataLayer.DAO
 {
-    public abstract class BasicDao<TDbContext, TPo> : IDisposable
-        where TDbContext : DbHelper, new()
+    public abstract class BasicDao<TDbContext, TPo> : IBasicDao,IDisposable
+        where TDbContext : Entities, new()
         where TPo : class, new()
     {
         protected BasicDao(TDbContext dbContext)
@@ -16,29 +19,23 @@ namespace FiveDataLayer.DAO
         }
         protected readonly TDbContext DbContext;
 
-        public virtual IEnumerable<TPo> GetData()
-        {
-            return this.DbContext.GetData<TPo>();
-        }
+        public abstract IEnumerable<TPo> GetData();
 
-        public virtual bool Add(TPo po)
-        {
-            return this.DbContext.Add(po);
-        }
+        public abstract TPo Add(TPo po);
 
-        public virtual bool Update(TPo updatePo)
-        {
-            return this.DbContext.Update(updatePo);
-        }
+        public abstract void Update(TPo updatePo);
 
-        public virtual bool Remove(TPo po)
+        public abstract TPo Remove(TPo po);
+
+        public void SaveChanges()
         {
-            return this.DbContext.Delete(po);
+            this.DbContext.SaveChanges();
         }
 
         public virtual void Dispose()
         {
 
         }
+
     }
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using FiveDataLayer.DbModel;
 
 namespace FiveDataLayer.DAO
 {
@@ -12,10 +13,9 @@ namespace FiveDataLayer.DAO
     {
         public StockMarketDao()
         {
-            this.DbContext = new DbHelper(ConfigurationManager.ConnectionStrings["StockMarket"].ConnectionString);
+            this.DbContext = new Entities();
         }
-
-        protected readonly DbHelper DbContext;
+        protected readonly Entities DbContext;
         public StockModelDao StockModelDao => new StockModelDao(this.DbContext);
         public StockTypeDao StockTypeDao => new StockTypeDao(this.DbContext);
         public StockReportModelDao StockReportModelDao => new StockReportModelDao(this.DbContext);

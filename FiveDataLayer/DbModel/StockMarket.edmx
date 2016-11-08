@@ -1,0 +1,222 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="StockMarketModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Stock">
+          <Key>
+            <PropertyRef Name="StockCodeId" />
+          </Key>
+          <Property Name="StockCodeId" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="StockName" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="StockTypeId" Type="int" Nullable="false" />
+          <Property Name="IsActivity" Type="bit" Nullable="false" />
+          <Property Name="CreatedAt" Type="datetimeoffset" Precision="7" />
+          <Property Name="LastModifiedAt" Type="datetimeoffset" Precision="7" />
+        </EntityType>
+        <EntityType Name="StockOperationTracking">
+          <Key>
+            <PropertyRef Name="StockOperationTrackingId" />
+          </Key>
+          <Property Name="StockOperationTrackingId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="OperationDate" Type="datetime" Nullable="false" />
+          <Property Name="StockCount" Type="int" />
+          <Property Name="CreatedAt" Type="datetimeoffset" Precision="7" />
+        </EntityType>
+        <EntityType Name="StockReport">
+          <Key>
+            <PropertyRef Name="StockReportId" />
+          </Key>
+          <Property Name="StockReportId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StockCodeId" Type="varchar" MaxLength="20" />
+          <Property Name="Author" Type="nvarchar" MaxLength="100" />
+          <Property Name="Change" Type="nvarchar" MaxLength="100" />
+          <Property Name="Companycode" Type="int" />
+          <Property Name="ReportTime" Type="datetime" />
+          <Property Name="InstitutionId" Type="int" />
+          <Property Name="Infocode" Type="nvarchar" MaxLength="100" />
+          <Property Name="InsCode" Type="varchar" MaxLength="100" />
+          <Property Name="InsName" Type="nvarchar" MaxLength="100" />
+          <Property Name="InsStar" Type="int" />
+          <Property Name="Rate" Type="nvarchar" MaxLength="100" />
+          <Property Name="SratingName" Type="nvarchar" MaxLength="100" />
+          <Property Name="CurrentProfit" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="FutureProfit" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="CurrentIncomeRate" Type="decimal" Precision="10" Scale="4" />
+          <Property Name="FutureIncomeRate" Type="decimal" Precision="10" Scale="4" />
+          <Property Name="Title" Type="nvarchar" MaxLength="500" />
+          <Property Name="ProfitYear" Type="int" />
+          <Property Name="NewPrice" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="DataReportUrl" Type="nvarchar" MaxLength="200" />
+        </EntityType>
+        <EntityType Name="StockType">
+          <Key>
+            <PropertyRef Name="StockTypeId" />
+          </Key>
+          <Property Name="StockTypeId" Type="int" Nullable="false" />
+          <Property Name="StockTypeName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="description" Type="nvarchar" MaxLength="500" />
+          <Property Name="CreatedAt" Type="datetimeoffset" Precision="7" />
+        </EntityType>
+        <EntityContainer Name="StockMarketModelStoreContainer">
+          <EntitySet Name="Stock" EntityType="Self.Stock" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StockOperationTracking" EntityType="Self.StockOperationTracking" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StockReport" EntityType="Self.StockReport" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StockType" EntityType="Self.StockType" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="StockMarketModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Stock">
+          <Key>
+            <PropertyRef Name="StockCodeId" />
+          </Key>
+          <Property Name="StockCodeId" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="StockName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="StockTypeId" Type="Int32" Nullable="false" />
+          <Property Name="IsActivity" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedAt" Type="DateTimeOffset" Precision="7" />
+          <Property Name="LastModifiedAt" Type="DateTimeOffset" Precision="7" />
+        </EntityType>
+        <EntityType Name="StockOperationTracking">
+          <Key>
+            <PropertyRef Name="StockOperationTrackingId" />
+          </Key>
+          <Property Name="StockOperationTrackingId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OperationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="StockCount" Type="Int32" />
+          <Property Name="CreatedAt" Type="DateTimeOffset" Precision="7" />
+        </EntityType>
+        <EntityType Name="StockType">
+          <Key>
+            <PropertyRef Name="StockTypeId" />
+          </Key>
+          <Property Name="StockTypeId" Type="Int32" Nullable="false" />
+          <Property Name="StockTypeName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="description" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedAt" Type="DateTimeOffset" Precision="7" />
+        </EntityType>
+        <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Stock" EntityType="Self.Stock" />
+          <EntitySet Name="StockOperationTracking" EntityType="Self.StockOperationTracking" />
+          <EntitySet Name="StockType" EntityType="Self.StockType" />
+          <EntitySet Name="StockReport" EntityType="StockMarketModel.StockReport" />
+        </EntityContainer>
+        <EntityType Name="StockReport">
+          <Key>
+            <PropertyRef Name="StockReportId" />
+          </Key>
+          <Property Name="StockReportId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StockCodeId" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Author" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Change" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Companycode" Type="Int32" />
+          <Property Name="ReportTime" Type="DateTime" Precision="3" />
+          <Property Name="InstitutionId" Type="Int32" />
+          <Property Name="Infocode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="InsCode" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="InsName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="InsStar" Type="Int32" />
+          <Property Name="Rate" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="SratingName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CurrentProfit" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="FutureProfit" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="CurrentIncomeRate" Type="Decimal" Precision="10" Scale="4" />
+          <Property Name="FutureIncomeRate" Type="Decimal" Precision="10" Scale="4" />
+          <Property Name="Title" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="ProfitYear" Type="Int32" />
+          <Property Name="NewPrice" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="DataReportUrl" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="StockMarketModelStoreContainer" CdmEntityContainer="Entities">
+          <EntitySetMapping Name="Stock">
+            <EntityTypeMapping TypeName="StockMarketModel.Stock">
+              <MappingFragment StoreEntitySet="Stock">
+                <ScalarProperty Name="StockCodeId" ColumnName="StockCodeId" />
+                <ScalarProperty Name="StockName" ColumnName="StockName" />
+                <ScalarProperty Name="StockTypeId" ColumnName="StockTypeId" />
+                <ScalarProperty Name="IsActivity" ColumnName="IsActivity" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="LastModifiedAt" ColumnName="LastModifiedAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StockOperationTracking">
+            <EntityTypeMapping TypeName="StockMarketModel.StockOperationTracking">
+              <MappingFragment StoreEntitySet="StockOperationTracking">
+                <ScalarProperty Name="StockOperationTrackingId" ColumnName="StockOperationTrackingId" />
+                <ScalarProperty Name="OperationDate" ColumnName="OperationDate" />
+                <ScalarProperty Name="StockCount" ColumnName="StockCount" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StockType">
+            <EntityTypeMapping TypeName="StockMarketModel.StockType">
+              <MappingFragment StoreEntitySet="StockType">
+                <ScalarProperty Name="StockTypeId" ColumnName="StockTypeId" />
+                <ScalarProperty Name="StockTypeName" ColumnName="StockTypeName" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StockReport">
+            <EntityTypeMapping TypeName="StockMarketModel.StockReport">
+              <MappingFragment StoreEntitySet="StockReport">
+                <ScalarProperty Name="DataReportUrl" ColumnName="DataReportUrl" />
+                <ScalarProperty Name="NewPrice" ColumnName="NewPrice" />
+                <ScalarProperty Name="ProfitYear" ColumnName="ProfitYear" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="FutureIncomeRate" ColumnName="FutureIncomeRate" />
+                <ScalarProperty Name="CurrentIncomeRate" ColumnName="CurrentIncomeRate" />
+                <ScalarProperty Name="FutureProfit" ColumnName="FutureProfit" />
+                <ScalarProperty Name="CurrentProfit" ColumnName="CurrentProfit" />
+                <ScalarProperty Name="SratingName" ColumnName="SratingName" />
+                <ScalarProperty Name="Rate" ColumnName="Rate" />
+                <ScalarProperty Name="InsStar" ColumnName="InsStar" />
+                <ScalarProperty Name="InsName" ColumnName="InsName" />
+                <ScalarProperty Name="InsCode" ColumnName="InsCode" />
+                <ScalarProperty Name="Infocode" ColumnName="Infocode" />
+                <ScalarProperty Name="InstitutionId" ColumnName="InstitutionId" />
+                <ScalarProperty Name="ReportTime" ColumnName="ReportTime" />
+                <ScalarProperty Name="Companycode" ColumnName="Companycode" />
+                <ScalarProperty Name="Change" ColumnName="Change" />
+                <ScalarProperty Name="Author" ColumnName="Author" />
+                <ScalarProperty Name="StockCodeId" ColumnName="StockCodeId" />
+                <ScalarProperty Name="StockReportId" ColumnName="StockReportId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
