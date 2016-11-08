@@ -3,13 +3,14 @@ using FiveDataLayer.DAO;
 using FiveDataLayer.DbModel;
 using FiveModel;
 using FiveModel.WebModel;
+using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using HtmlAgilityPack;
+
 namespace FiveBusinessLayer
 {
     public class WarmHead
@@ -22,6 +23,7 @@ namespace FiveBusinessLayer
         private static bool TheadLock = true;
         private const int PageSize = 50;
         private Dictionary<string, Stock> stockcodes = new Dictionary<string, Stock>();
+
         public void FirstOfAll()
         {
             int datarows = 1;
@@ -182,7 +184,6 @@ namespace FiveBusinessLayer
             Dao.StockReportModelDao.Add(stockReport);
             Dao.StockReportModelDao.SaveChanges();
             Console.WriteLine($"插入了一条数据，ID：{stockReport.StockReportId}");
-
         }
 
         public void forTest()
@@ -206,11 +207,12 @@ namespace FiveBusinessLayer
                     var test = nodes[i].InnerText;
                     if (string.IsNullOrEmpty(test)) continue;
                     //乱码不知道怎么解决了。。。。
-                    var s=System.Text.Encoding.GetEncoding("GB2312").GetString(System.Text.Encoding.Unicode.GetBytes(test));
-                    sb.Append(s);
+                    // var s = System.Text.Encoding.GetEncoding("UTF-8").GetString(System.Text.Encoding.UTF8.GetBytes(test));
+                    sb.Append(test);
+                    MyLog.OutputAndSaveTxt(test);
                 }
             }
-                Console.WriteLine(sb.ToString());
+            Console.WriteLine(sb.ToString());
         }
 
         private string ReBuildData(string html)
