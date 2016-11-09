@@ -1,6 +1,7 @@
 ﻿using FiveCommonLayer;
 using FiveDataLayer.DAO;
 using FiveDataLayer.DbModel;
+using FiveDataLayer.DbService;
 using FiveModel;
 using FiveModel.WebModel;
 using HtmlAgilityPack;
@@ -188,8 +189,17 @@ namespace FiveBusinessLayer
 
         public void forTest()
         {
-            string url = "http://data.eastmoney.com/report/20161108/APPH6BZpTVeKASearchReport.html";
-            GetReportData(url);
+            MainServcie stservice = new MainServcie();
+            stservice.Add(new StockType()
+            {
+                CreatedAt = DateTime.Now,
+                description = "test",
+                StockTypeId = 5,
+                StockTypeName = "test"
+            });
+            Console.ReadKey();
+            //string url = "http://data.eastmoney.com/report/20161108/APPH6BZpTVeKASearchReport.html";
+            //GetReportData(url);
         }
 
         private void GetReportData(string url)
