@@ -25,6 +25,14 @@
           <Property Name="StockCount" Type="int" />
           <Property Name="CreatedAt" Type="datetimeoffset" Precision="7" />
         </EntityType>
+        <EntityType Name="StockRepordData">
+          <Key>
+            <PropertyRef Name="StockReportId" />
+          </Key>
+          <Property Name="StockReportId" Type="int" Nullable="false" />
+          <Property Name="DataReport" Type="text" />
+          <Property Name="CreatedAt" Type="datetimeoffset" Precision="7" Nullable="false" />
+        </EntityType>
         <EntityType Name="StockReport">
           <Key>
             <PropertyRef Name="StockReportId" />
@@ -37,7 +45,7 @@
           <Property Name="ReportTime" Type="datetime" />
           <Property Name="InstitutionId" Type="int" />
           <Property Name="Infocode" Type="nvarchar" MaxLength="100" />
-          <Property Name="InsCode" Type="varchar" MaxLength="100" />
+          <Property Name="InsCode" Type="varchar" MaxLength="50" />
           <Property Name="InsName" Type="nvarchar" MaxLength="100" />
           <Property Name="InsStar" Type="int" />
           <Property Name="Rate" Type="nvarchar" MaxLength="100" />
@@ -63,6 +71,7 @@
         <EntityContainer Name="StockMarketModelStoreContainer">
           <EntitySet Name="Stock" EntityType="Self.Stock" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StockOperationTracking" EntityType="Self.StockOperationTracking" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StockRepordData" EntityType="Self.StockRepordData" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StockReport" EntityType="Self.StockReport" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StockType" EntityType="Self.StockType" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
@@ -70,12 +79,19 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="StockMarketModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Stock" EntityType="StockMarketModel.Stock" />
+          <EntitySet Name="StockOperationTracking" EntityType="StockMarketModel.StockOperationTracking" />
+          <EntitySet Name="StockRepordData" EntityType="StockMarketModel.StockRepordData" />
+          <EntitySet Name="StockReport" EntityType="StockMarketModel.StockReport" />
+          <EntitySet Name="StockType" EntityType="StockMarketModel.StockType" />
+        </EntityContainer>
         <EntityType Name="Stock">
           <Key>
             <PropertyRef Name="StockCodeId" />
           </Key>
-          <Property Name="StockCodeId" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="StockName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="StockCodeId" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="StockName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="StockTypeId" Type="Int32" Nullable="false" />
           <Property Name="IsActivity" Type="Boolean" Nullable="false" />
           <Property Name="CreatedAt" Type="DateTimeOffset" Precision="7" />
@@ -90,21 +106,14 @@
           <Property Name="StockCount" Type="Int32" />
           <Property Name="CreatedAt" Type="DateTimeOffset" Precision="7" />
         </EntityType>
-        <EntityType Name="StockType">
+        <EntityType Name="StockRepordData">
           <Key>
-            <PropertyRef Name="StockTypeId" />
+            <PropertyRef Name="StockReportId" />
           </Key>
-          <Property Name="StockTypeId" Type="Int32" Nullable="false" />
-          <Property Name="StockTypeName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="description" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedAt" Type="DateTimeOffset" Precision="7" />
+          <Property Name="StockReportId" Type="Int32" Nullable="false" />
+          <Property Name="DataReport" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedAt" Type="DateTimeOffset" Nullable="false" Precision="7" />
         </EntityType>
-        <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Stock" EntityType="Self.Stock" />
-          <EntitySet Name="StockOperationTracking" EntityType="Self.StockOperationTracking" />
-          <EntitySet Name="StockType" EntityType="Self.StockType" />
-          <EntitySet Name="StockReport" EntityType="StockMarketModel.StockReport" />
-        </EntityContainer>
         <EntityType Name="StockReport">
           <Key>
             <PropertyRef Name="StockReportId" />
@@ -117,7 +126,7 @@
           <Property Name="ReportTime" Type="DateTime" Precision="3" />
           <Property Name="InstitutionId" Type="Int32" />
           <Property Name="Infocode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="InsCode" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="InsCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="InsName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="InsStar" Type="Int32" />
           <Property Name="Rate" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
@@ -131,7 +140,16 @@
           <Property Name="NewPrice" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="DataReportUrl" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
         </EntityType>
-      </Schema>
+        <EntityType Name="StockType">
+          <Key>
+            <PropertyRef Name="StockTypeId" />
+          </Key>
+          <Property Name="StockTypeId" Type="Int32" Nullable="false" />
+          <Property Name="StockTypeName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="description" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedAt" Type="DateTimeOffset" Precision="7" />
+        </EntityType>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -140,32 +158,31 @@
           <EntitySetMapping Name="Stock">
             <EntityTypeMapping TypeName="StockMarketModel.Stock">
               <MappingFragment StoreEntitySet="Stock">
-                <ScalarProperty Name="StockCodeId" ColumnName="StockCodeId" />
-                <ScalarProperty Name="StockName" ColumnName="StockName" />
-                <ScalarProperty Name="StockTypeId" ColumnName="StockTypeId" />
-                <ScalarProperty Name="IsActivity" ColumnName="IsActivity" />
-                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
                 <ScalarProperty Name="LastModifiedAt" ColumnName="LastModifiedAt" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="IsActivity" ColumnName="IsActivity" />
+                <ScalarProperty Name="StockTypeId" ColumnName="StockTypeId" />
+                <ScalarProperty Name="StockName" ColumnName="StockName" />
+                <ScalarProperty Name="StockCodeId" ColumnName="StockCodeId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="StockOperationTracking">
             <EntityTypeMapping TypeName="StockMarketModel.StockOperationTracking">
               <MappingFragment StoreEntitySet="StockOperationTracking">
-                <ScalarProperty Name="StockOperationTrackingId" ColumnName="StockOperationTrackingId" />
-                <ScalarProperty Name="OperationDate" ColumnName="OperationDate" />
-                <ScalarProperty Name="StockCount" ColumnName="StockCount" />
                 <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="StockCount" ColumnName="StockCount" />
+                <ScalarProperty Name="OperationDate" ColumnName="OperationDate" />
+                <ScalarProperty Name="StockOperationTrackingId" ColumnName="StockOperationTrackingId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="StockType">
-            <EntityTypeMapping TypeName="StockMarketModel.StockType">
-              <MappingFragment StoreEntitySet="StockType">
-                <ScalarProperty Name="StockTypeId" ColumnName="StockTypeId" />
-                <ScalarProperty Name="StockTypeName" ColumnName="StockTypeName" />
-                <ScalarProperty Name="description" ColumnName="description" />
+          <EntitySetMapping Name="StockRepordData">
+            <EntityTypeMapping TypeName="StockMarketModel.StockRepordData">
+              <MappingFragment StoreEntitySet="StockRepordData">
                 <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="DataReport" ColumnName="DataReport" />
+                <ScalarProperty Name="StockReportId" ColumnName="StockReportId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -193,6 +210,16 @@
                 <ScalarProperty Name="Author" ColumnName="Author" />
                 <ScalarProperty Name="StockCodeId" ColumnName="StockCodeId" />
                 <ScalarProperty Name="StockReportId" ColumnName="StockReportId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StockType">
+            <EntityTypeMapping TypeName="StockMarketModel.StockType">
+              <MappingFragment StoreEntitySet="StockType">
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="StockTypeName" ColumnName="StockTypeName" />
+                <ScalarProperty Name="StockTypeId" ColumnName="StockTypeId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

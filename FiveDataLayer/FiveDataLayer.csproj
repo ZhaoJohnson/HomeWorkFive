@@ -78,6 +78,9 @@
     <Compile Include="DbModel\StockOperationTracking.cs">
       <DependentUpon>StockMarket.tt</DependentUpon>
     </Compile>
+    <Compile Include="DbModel\StockRepordData.cs">
+      <DependentUpon>StockMarket.tt</DependentUpon>
+    </Compile>
     <Compile Include="DbModel\StockReport.cs">
       <DependentUpon>StockMarket.tt</DependentUpon>
     </Compile>

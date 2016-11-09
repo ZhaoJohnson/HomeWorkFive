@@ -25,13 +25,25 @@ namespace FiveCommonLayer
         }
 
         /// <summary>
-        /// UTF8
+        /// UTF8 OR GB2312
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        public static string DownloadCommodity(string url)
+        public static string DownloadCommodity(string url, string encoding)
         {
-            return DownloadHtml(url, System.Text.Encoding.UTF8);
+            Encoding enc = Encoding.Default;
+            switch (encoding)
+            {
+                case "UTF8":
+                    enc = Encoding.UTF8;
+                    break;
+
+                case "GB2312":
+                    enc = Encoding.GetEncoding("GB2312");
+                    break;
+            }
+            //Encoding enc = Encoding.GetEncoding(encoding);
+            return DownloadHtml(url, enc);
         }
 
         /// <summary>
@@ -57,7 +69,7 @@ namespace FiveCommonLayer
                 //request.Headers.Add("Accept-Encoding", "gzip, deflate, sdch");
                 //request.Headers.Add("Referer", "http://list.yhd.com/c0-0/b/a-s1-v0-p1-price-d0-f0-m1-rt0-pid-mid0-kiphone/");
 
-                Encoding enc = Encoding.GetEncoding("GB2312"); // 如果是乱码就改成 utf-8 / GB2312
+                //Encoding enc = Encoding.GetEncoding("GB2312"); // 如果是乱码就改成 utf-8 / GB2312
 
                 using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)//发起请求
                 {
@@ -69,7 +81,7 @@ namespace FiveCommonLayer
                     {
                         try
                         {
-                            StreamReader sr = new StreamReader(response.GetResponseStream(), enc);
+                            StreamReader sr = new StreamReader(response.GetResponseStream(), encode);
                             html = sr.ReadToEnd();//读取数据
                             sr.Close();
                         }

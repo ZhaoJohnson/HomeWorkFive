@@ -12,11 +12,10 @@ namespace FiveDataLayer.DbModel
     using System;
     using System.Collections.Generic;
     
-    public partial class StockOperationTracking
+    public partial class StockRepordData
     {
-        public int StockOperationTrackingId { get; set; }
-        public System.DateTime OperationDate { get; set; }
-        public Nullable<int> StockCount { get; set; }
-        public Nullable<System.DateTimeOffset> CreatedAt { get; set; }
+        public int StockReportId { get; set; }
+        public string DataReport { get; set; }
+        public System.DateTimeOffset CreatedAt { get; set; }
     }
 }

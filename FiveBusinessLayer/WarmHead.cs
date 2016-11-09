@@ -24,6 +24,7 @@ namespace FiveBusinessLayer
         private static bool TheadLock = true;
         private const int PageSize = 50;
         private Dictionary<string, Stock> stockcodes = new Dictionary<string, Stock>();
+        private MainServcie Service = new MainServcie();
 
         public void FirstOfAll()
         {
@@ -46,7 +47,8 @@ namespace FiveBusinessLayer
                 OperationDate = data.update,
                 CreatedAt = DateTimeOffset.Now
             };
-            Dao.StockOperationTrackingDao.Add(stockoperation);
+            Service.Add(stockoperation);
+            //ao.StockOperationTrackingDao.Add(stockoperation);
         }
 
         public void WarmStar()
@@ -102,7 +104,7 @@ namespace FiveBusinessLayer
 
         private EmDataModel GetEmDataModelByUrl(string url)
         {
-            var html = HttpHelper.DownloadCommodity(url);
+            var html = HttpHelper.DownloadCommodity(url, "UTF8");
             var datajson = ReBuildData(html);
             EmDataModel data = MyJsonHelper.Json2ObjectByString<EmDataModel>(datajson);
             return data;
@@ -154,37 +156,40 @@ namespace FiveBusinessLayer
 
         private void SaveEmData(Stock stock, StockReport stockReport)
         {
-            try
-            {
-                var StockCodeKey = Dao.StockModelDao.GetStockBykey(stock.StockCodeId);
-                if (StockCodeKey != null)
-                {
-                    if (!stockcodes.ContainsKey(stock.StockCodeId))
-                        stockcodes.Add(stock.StockCodeId, StockCodeKey);
-                    stock.LastModifiedAt = DateTimeOffset.Now;
-                    Dao.StockModelDao.Update(stock);
-                    AddNewStockData(stockReport);
-                }
-                else
-                {
-                    Dao.StockModelDao.Add(stock);
-                    Dao.StockModelDao.SaveChanges();
-                    AddNewStockData(stockReport);
-                }
-            }
-            catch (Exception ex)
-            {
-                MyLog.OutputAndSaveTxt(ex.Message);
-            }
+            AddNewStockData(stockReport);
+            //try
+            //{
+            //    var StockCodeKey = Dao.StockModelDao.GetStockBykey(stock.StockCodeId);
+            //    if (StockCodeKey != null)
+            //    {
+            //        if (!stockcodes.ContainsKey(stock.StockCodeId))
+            //            stockcodes.Add(stock.StockCodeId, StockCodeKey);
+            //        stock.LastModifiedAt = DateTimeOffset.Now;
+            //        Dao.StockModelDao.Update(stock);
+            //        AddNewStockData(stockReport);
+            //    }
+            //    else
+            //    {
+            //        Dao.StockModelDao.Add(stock);
+            //        Dao.StockModelDao.SaveChanges();
+            //        AddNewStockData(stockReport);
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    MyLog.OutputAndSaveTxt(ex.Message);
+            //}
         }
 
         private void AddNewStockData(StockReport stockReport)
         {
             var reportUrl = string.Format("http://data.eastmoney.com/report/{0}/{1}.html", stockReport.ReportTime.Value.ToString("yyyyMMdd"), stockReport.Infocode);
             stockReport.DataReportUrl = reportUrl;
-            Dao.StockReportModelDao.Add(stockReport);
-            Dao.StockReportModelDao.SaveChanges();
-            Console.WriteLine($"插入了一条数据，ID：{stockReport.StockReportId}");
+            //Dao.StockReportModelDao.Add(stockReport);
+            //Dao.StockReportModelDao.SaveChanges();
+            Console.WriteLine($"stockReport插入了一条数据，ID：{stockReport.StockReportId}");
+            Console.WriteLine(reportUrl);
+            GetReportData(reportUrl);
         }
 
         public void forTest()
@@ -204,7 +209,7 @@ namespace FiveBusinessLayer
 
         private void GetReportData(string url)
         {
-            var html = HttpHelper.DownloadCommodity(url);
+            var html = HttpHelper.DownloadCommodity(url, "GB2312");
             HtmlDocument htmldoc = new HtmlDocument();
             htmldoc.LoadHtml(html);
             string innerData = "//*[@id=\"ContentBody\"]/div/p";
@@ -216,11 +221,9 @@ namespace FiveBusinessLayer
                 {
                     var test = nodes[i].InnerText;
                     if (string.IsNullOrEmpty(test)) continue;
-                    //乱码不知道怎么解决了。。。。
-                    // var s = System.Text.Encoding.GetEncoding("UTF-8").GetString(System.Text.Encoding.UTF8.GetBytes(test));
                     sb.Append(test);
-                    MyLog.OutputAndSaveTxt(test);
                 }
+                //数据库新增表，单独存储文本信息，数据类型为TEXT
             }
             Console.WriteLine(sb.ToString());
         }
