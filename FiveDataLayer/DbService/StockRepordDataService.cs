@@ -9,5 +9,9 @@ namespace FiveDataLayer.DbService
 {
     public class StockRepordDataService:BasicServcie<StockRepordData>
     {
+        public override StockRepordData Update(StockRepordData T)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

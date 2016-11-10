@@ -1,5 +1,4 @@
 ﻿using FiveCommonLayer;
-using FiveDataLayer.DAO;
 using FiveDataLayer.DbModel;
 using FiveDataLayer.DbService;
 using FiveModel;
@@ -10,13 +9,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace FiveBusinessLayer
 {
     public class WarmHead
     {
-        private StockMarketDao Dao = new StockMarketDao();
         private static int allpage;
         private static bool isGoOn = true;
         private static object LockForPage = new object();
@@ -58,9 +57,12 @@ namespace FiveBusinessLayer
             int page = 1;
             do
             {
+                int ii = 1;
+                if (!isGoingPage) continue;
                 lock (LockForPage)
                 {
-                    Console.WriteLine($"正在读取第{page}页的数据");
+                    Console.WriteLine($"第{ii}次进入，当前线程：{ Thread.CurrentThread.ManagedThreadId},当前读取的页数为：{page}");
+                    Console.WriteLine($"正在读取第{page}页的数据"+"当前线程："+ Thread.CurrentThread.ManagedThreadId);
                     StringBuilder Htmlsb = new StringBuilder();
                     Htmlsb.Append(
                         "http://datainterface.eastmoney.com//EM_DataCenter/js.aspx?type=SR&sty=GGSR&js=var%20{jsname}=");
@@ -68,15 +70,16 @@ namespace FiveBusinessLayer
                     Htmlsb.Append($"&ps={datarows}");
                     Htmlsb.Append($"&p={page}");
                     Htmlsb.Append("&mkt=0&stat=0&cmd=2&code=");
-                    GetEmJson(Htmlsb.ToString());
-                    //taskList.Add(taskFactory.StartNew(() => GetEmJson(Htmlsb.ToString())));
-                    //if (taskList.Count > 5)
-                    //{
-                    //    isGoingPage = false;
-                    //    taskList = taskList.Where(t => !t.IsCompleted && !t.IsCanceled && !t.IsFaulted).ToList();
-                    //    //Task.WaitAny(taskList.ToArray());
-                    //    isGoingPage = true;
-                    //}
+                     
+                    //GetEmJson(Htmlsb.ToString());
+                    taskList.Add(taskFactory.StartNew(() => GetEmJson(Htmlsb.ToString())));
+                    if (taskList.Count > 5)
+                    {
+                        isGoingPage = false;
+                        taskList = taskList.Where(t => !t.IsCompleted && !t.IsCanceled && !t.IsFaulted).ToList();
+                        Task.WaitAny(taskList.ToArray());
+                        isGoingPage = true;
+                    }
                     if (page < allpage)
                         page++;
                     if (page == allpage)
@@ -87,6 +90,7 @@ namespace FiveBusinessLayer
                         Console.ReadKey();
                     }
                 }
+                ii++;
             } while (TheadLock);
         }
 
@@ -115,10 +119,10 @@ namespace FiveBusinessLayer
             stock.IsActivity = true;
             stock.CreatedAt = DateTimeOffset.Now;
             stock.LastModifiedAt = DateTimeOffset.Now;
+
+            #region 分区
             var codes = emDataDetailModel.secuFullCode.Split('.');
-            //int stockcode;
             if (string.IsNullOrEmpty(codes[0])) throw new Exception("代码有问题");
-            //int.TryParse(codes[0].ToString(), out stockcode);
             stock.StockCodeId = codes[0];
             if (string.IsNullOrEmpty(codes[1])) throw new Exception("代码有问题");
             switch (codes[1])
@@ -134,6 +138,7 @@ namespace FiveBusinessLayer
                 default:
                     throw new Exception("怎么可能");
             }
+            #endregion
             stock.StockName = emDataDetailModel.secuName;
 
             StockReport stockReport = new StockReport();
@@ -158,19 +163,18 @@ namespace FiveBusinessLayer
             AddNewStockData(stockReport);
             try
             {
-                var StockCodeKey = Dao.StockModelDao.GetStockBykey(stock.StockCodeId);
+                var StockCodeKey = Service.StockService.GetStockByKey(stock.StockCodeId);
                 if (StockCodeKey != null)
                 {
                     if (!stockcodes.ContainsKey(stock.StockCodeId))
                         stockcodes.Add(stock.StockCodeId, StockCodeKey);
                     stock.LastModifiedAt = DateTimeOffset.Now;
-                    Dao.StockModelDao.Update(stock);
+                    Service.StockService.Update(stock);
                     AddNewStockData(stockReport);
                 }
                 else
                 {
-                    Dao.StockModelDao.Add(stock);
-                    Dao.StockModelDao.SaveChanges();
+                    Service.StockService.Add(stock);
                     AddNewStockData(stockReport);
                 }
             }
@@ -184,22 +188,22 @@ namespace FiveBusinessLayer
         {
             var reportUrl = string.Format("http://data.eastmoney.com/report/{0}/{1}.html", stockReport.ReportTime.Value.ToString("yyyyMMdd"), stockReport.Infocode);
             stockReport.DataReportUrl = reportUrl;
-            stockReport= Service.StockReportService.Add(stockReport);
+            stockReport = Service.StockReportService.Add(stockReport);
             Console.WriteLine($"stockReport插入了一条数据，ID：{stockReport.StockReportId}");
             Console.WriteLine(reportUrl);
-            GetReportData(reportUrl,stockReport.StockReportId);
+            GetReportData(reportUrl, stockReport.StockReportId);
         }
 
         public void forTest()
         {
-           
-          
+
+
             Console.ReadKey();
             //string url = "http://data.eastmoney.com/report/20161108/APPH6BZpTVeKASearchReport.html";
             //GetReportData(url);
         }
 
-        private void GetReportData(string url,int reportId)
+        private void GetReportData(string url, int reportId)
         {
             var html = HttpHelper.DownloadCommodity(url, "GB2312");
             HtmlDocument htmldoc = new HtmlDocument();
@@ -223,7 +227,6 @@ namespace FiveBusinessLayer
                 StockReportId = reportId,
                 DataReport = sb.ToString()
             });
-            Console.WriteLine(sb.ToString());
         }
 
         private string ReBuildData(string html)
