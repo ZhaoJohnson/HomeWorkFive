@@ -90,7 +90,11 @@
     <Compile Include="DbModel\StockType.cs">
       <DependentUpon>StockMarket.tt</DependentUpon>
     </Compile>
-    <Compile Include="DbService\MainServcie.cs" />
+    <Compile Include="DbService\BasicServcie.cs" />
+    <Compile Include="DbService\ShowService.cs" />
+    <Compile Include="DbService\StockOperationTrackingService.cs" />
+    <Compile Include="DbService\StockReportService.cs" />
+    <Compile Include="DbService\StockService.cs" />
     <Compile Include="IDAO\IBasicDao.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StockEntityFramework.cs" />

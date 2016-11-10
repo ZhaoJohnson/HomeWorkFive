@@ -16,7 +16,7 @@ namespace FiveBusinessLayer
 {
     public class WarmHead
     {
-        private static StockMarketDao Dao = new StockMarketDao();
+        private StockMarketDao Dao = new StockMarketDao();
         private static int allpage;
         private static bool isGoOn = true;
         private static object LockForPage = new object();
@@ -24,7 +24,7 @@ namespace FiveBusinessLayer
         private static bool TheadLock = true;
         private const int PageSize = 50;
         private Dictionary<string, Stock> stockcodes = new Dictionary<string, Stock>();
-        private MainServcie Service = new MainServcie();
+        private ShowService Service = new ShowService();
 
         public void FirstOfAll()
         {
@@ -47,8 +47,7 @@ namespace FiveBusinessLayer
                 OperationDate = data.update,
                 CreatedAt = DateTimeOffset.Now
             };
-            Service.Add(stockoperation);
-            //ao.StockOperationTrackingDao.Add(stockoperation);
+            Service.StockOperationTrackingService.Add(stockoperation);
         }
 
         public void WarmStar()
@@ -157,34 +156,35 @@ namespace FiveBusinessLayer
         private void SaveEmData(Stock stock, StockReport stockReport)
         {
             AddNewStockData(stockReport);
-            //try
-            //{
-            //    var StockCodeKey = Dao.StockModelDao.GetStockBykey(stock.StockCodeId);
-            //    if (StockCodeKey != null)
-            //    {
-            //        if (!stockcodes.ContainsKey(stock.StockCodeId))
-            //            stockcodes.Add(stock.StockCodeId, StockCodeKey);
-            //        stock.LastModifiedAt = DateTimeOffset.Now;
-            //        Dao.StockModelDao.Update(stock);
-            //        AddNewStockData(stockReport);
-            //    }
-            //    else
-            //    {
-            //        Dao.StockModelDao.Add(stock);
-            //        Dao.StockModelDao.SaveChanges();
-            //        AddNewStockData(stockReport);
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    MyLog.OutputAndSaveTxt(ex.Message);
-            //}
+            try
+            {
+                var StockCodeKey = Dao.StockModelDao.GetStockBykey(stock.StockCodeId);
+                if (StockCodeKey != null)
+                {
+                    if (!stockcodes.ContainsKey(stock.StockCodeId))
+                        stockcodes.Add(stock.StockCodeId, StockCodeKey);
+                    stock.LastModifiedAt = DateTimeOffset.Now;
+                    Dao.StockModelDao.Update(stock);
+                    AddNewStockData(stockReport);
+                }
+                else
+                {
+                    Dao.StockModelDao.Add(stock);
+                    Dao.StockModelDao.SaveChanges();
+                    AddNewStockData(stockReport);
+                }
+            }
+            catch (Exception ex)
+            {
+                MyLog.OutputAndSaveTxt(ex.Message);
+            }
         }
 
         private void AddNewStockData(StockReport stockReport)
         {
             var reportUrl = string.Format("http://data.eastmoney.com/report/{0}/{1}.html", stockReport.ReportTime.Value.ToString("yyyyMMdd"), stockReport.Infocode);
             stockReport.DataReportUrl = reportUrl;
+            Service.
             //Dao.StockReportModelDao.Add(stockReport);
             //Dao.StockReportModelDao.SaveChanges();
             Console.WriteLine($"stockReport插入了一条数据，ID：{stockReport.StockReportId}");
@@ -194,14 +194,8 @@ namespace FiveBusinessLayer
 
         public void forTest()
         {
-            MainServcie stservice = new MainServcie();
-            stservice.Add(new StockType()
-            {
-                CreatedAt = DateTime.Now,
-                description = "test",
-                StockTypeId = 5,
-                StockTypeName = "test"
-            });
+           
+          
             Console.ReadKey();
             //string url = "http://data.eastmoney.com/report/20161108/APPH6BZpTVeKASearchReport.html";
             //GetReportData(url);
