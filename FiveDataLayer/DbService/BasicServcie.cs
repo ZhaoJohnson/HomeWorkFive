@@ -1,6 +1,7 @@
 ﻿using FiveDataLayer.DbModel;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -22,6 +23,13 @@ namespace FiveDataLayer.DbService
             return ExecEntitySqlOnOperationData(ef => ef.Set<Tclass>().Find(objectKey));
         }
 
-        public abstract Tclass Update(Tclass T);
+        public virtual Tclass AddorUpdate(Tclass T)
+        {
+            return ExecEntitySqlOnOperationData(ef =>
+            {
+                ef.Set<Tclass>().AddOrUpdate(T);
+                return ef.Set<Tclass>().Find(T);
+            }, true);
+        }
     }
 }

@@ -167,7 +167,7 @@ namespace FiveBusinessLayer
                     if (!stockcodes.ContainsKey(stock.StockCodeId))
                         stockcodes.Add(stock.StockCodeId, StockCodeKey);
                     stock.LastModifiedAt = DateTimeOffset.Now;
-                    Service.StockService.Update(stock);
+                    Service.StockService.AddorUpdate(stock);
                     AddNewStockData(stockReport);
                 }
                 else

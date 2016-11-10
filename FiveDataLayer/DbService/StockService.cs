@@ -17,7 +17,7 @@ namespace FiveDataLayer.DbService
             return ExecEntitySqlOnOperationData(ef => ef.Stock.Find(key));
         }
 
-        public override Stock Update(Stock T)
+        public override Stock AddorUpdate(Stock T)
         {
             return ExecEntitySqlOnOperationData(ef =>
             {

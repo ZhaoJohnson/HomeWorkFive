@@ -9,9 +9,6 @@ namespace FiveDataLayer.DbService
 {
     public class StockOperationTrackingService:BasicServcie<StockOperationTracking>
     {
-        public override StockOperationTracking Update(StockOperationTracking T)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }
