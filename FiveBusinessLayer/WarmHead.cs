@@ -94,14 +94,12 @@ namespace FiveBusinessLayer
             } while (TheadLock);
         }
 
-        //private static Dictionary<string,DateTime> StockCodes =new List<string>();
         public void GetEmJson(string url)
         {
             var data = GetEmDataModelByUrl(url);
-            //List<EmDataDetailModel> listDetailModels = new List<EmDataDetailModel>();
             foreach (EmDataDetailModel item in data.data)
             {
-                buildModel(item);
+                BuildModel(item);
             }
         }
 
@@ -113,7 +111,7 @@ namespace FiveBusinessLayer
             return data;
         }
 
-        private void buildModel(EmDataDetailModel emDataDetailModel)
+        private void BuildModel(EmDataDetailModel emDataDetailModel)
         {
             Stock stock = new Stock();
             stock.IsActivity = true;
@@ -219,7 +217,6 @@ namespace FiveBusinessLayer
                     if (string.IsNullOrEmpty(test)) continue;
                     sb.Append(test);
                 }
-                //数据库新增表，单独存储文本信息，数据类型为TEXT
             }
             Service.StockRepordDataService.Add(new StockRepordData()
             {
