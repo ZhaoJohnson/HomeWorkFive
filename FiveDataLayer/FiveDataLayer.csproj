@@ -93,6 +93,7 @@
     <Compile Include="DbService\BasicServcie.cs" />
     <Compile Include="DbService\ShowService.cs" />
     <Compile Include="DbService\StockOperationTrackingService.cs" />
+    <Compile Include="DbService\StockRepordDataService.cs" />
     <Compile Include="DbService\StockReportService.cs" />
     <Compile Include="DbService\StockService.cs" />
     <Compile Include="IDAO\IBasicDao.cs" />

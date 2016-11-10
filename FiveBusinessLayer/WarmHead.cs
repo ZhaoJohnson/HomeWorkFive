@@ -184,12 +184,10 @@ namespace FiveBusinessLayer
         {
             var reportUrl = string.Format("http://data.eastmoney.com/report/{0}/{1}.html", stockReport.ReportTime.Value.ToString("yyyyMMdd"), stockReport.Infocode);
             stockReport.DataReportUrl = reportUrl;
-            Service.
-            //Dao.StockReportModelDao.Add(stockReport);
-            //Dao.StockReportModelDao.SaveChanges();
+            stockReport= Service.StockReportService.Add(stockReport);
             Console.WriteLine($"stockReport插入了一条数据，ID：{stockReport.StockReportId}");
             Console.WriteLine(reportUrl);
-            GetReportData(reportUrl);
+            GetReportData(reportUrl,stockReport.StockReportId);
         }
 
         public void forTest()
@@ -201,7 +199,7 @@ namespace FiveBusinessLayer
             //GetReportData(url);
         }
 
-        private void GetReportData(string url)
+        private void GetReportData(string url,int reportId)
         {
             var html = HttpHelper.DownloadCommodity(url, "GB2312");
             HtmlDocument htmldoc = new HtmlDocument();
@@ -219,6 +217,12 @@ namespace FiveBusinessLayer
                 }
                 //数据库新增表，单独存储文本信息，数据类型为TEXT
             }
+            Service.StockRepordDataService.Add(new StockRepordData()
+            {
+                CreatedAt = DateTimeOffset.Now,
+                StockReportId = reportId,
+                DataReport = sb.ToString()
+            });
             Console.WriteLine(sb.ToString());
         }
 

@@ -10,6 +10,7 @@ namespace FiveDataLayer.DbService
     {
         public StockService StockService                                    => new StockService();
         public StockReportService StockReportService                        => new StockReportService();
+        public StockRepordDataService StockRepordDataService                => new StockRepordDataService();
         public StockOperationTrackingService StockOperationTrackingService  => new StockOperationTrackingService();
 
     }
