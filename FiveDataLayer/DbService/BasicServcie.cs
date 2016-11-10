@@ -17,6 +17,11 @@ namespace FiveDataLayer.DbService
             return ExecEntitySqlOnOperationData(ef => ef.Set<Tclass>().Add(t), true);
         }
 
+        public virtual Tclass QuerySingle(object objectKey)
+        {
+            return ExecEntitySqlOnOperationData(ef => ef.Set<Tclass>().Find(objectKey));
+        }
+
         public abstract Tclass Update(Tclass T);
     }
 }
