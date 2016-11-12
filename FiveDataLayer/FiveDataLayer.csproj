@@ -31,12 +31,21 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -45,33 +54,76 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AttributeModel\PrimaryKeyAttribute.cs" />
-    <Compile Include="DAO\BasicDao.cs" />
-    <Compile Include="DAO\InstitutionModelDao.cs" />
-    <Compile Include="DAO\StockModelDao.cs" />
-    <Compile Include="DAO\StockMarketDao.cs" />
-    <Compile Include="DAO\StockReportModelDao.cs" />
-    <Compile Include="DAO\StockTypeDao.cs" />
-    <Compile Include="DbHelper.cs" />
-    <Compile Include="DbModel\InstitutionModel.cs" />
-    <Compile Include="DbModel\StockReportModel.cs" />
-    <Compile Include="DbModel\StockModel.cs" />
-    <Compile Include="DbModel\StockTypeModel.cs" />
-    <Compile Include="IDbHelper.cs" />
+    <Compile Include="DbModel\StockMarket.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>StockMarket.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StockMarket.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>StockMarket.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StockMarket.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>StockMarket.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StockOperationTracking.cs">
+      <DependentUpon>StockMarket.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StockRepordData.cs">
+      <DependentUpon>StockMarket.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StockReport.cs">
+      <DependentUpon>StockMarket.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\Stock.cs">
+      <DependentUpon>StockMarket.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StockType.cs">
+      <DependentUpon>StockMarket.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbService\BasicServcie.cs" />
+    <Compile Include="DbService\ShowService.cs" />
+    <Compile Include="DbService\StockOperationTrackingService.cs" />
+    <Compile Include="DbService\StockRepordDataService.cs" />
+    <Compile Include="DbService\StockReportService.cs" />
+    <Compile Include="DbService\StockService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StockEntityFramework.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DbModel\StockMarket.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>StockMarket.edmx</DependentUpon>
+      <LastGenOutput>StockMarket.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="DbModel\StockMarket.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>StockMarket.edmx</DependentUpon>
+      <LastGenOutput>StockMarket.cs</LastGenOutput>
+    </Content>
     <Content Include="DbScript\fiveScript.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.Config" />
+    <EntityDeploy Include="DbModel\StockMarket.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>StockMarket.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="DbModel\StockMarket.edmx.diagram">
+      <DependentUpon>StockMarket.edmx</DependentUpon>
+    </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

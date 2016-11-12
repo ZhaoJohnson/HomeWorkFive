@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using FiveDataLayer.DbModel;
 
-namespace FiveDataLayer.DAO
+namespace FiveDataLayer.DbService
 {
-    public class StockTypeDao : BasicDao<DbHelper, StockTypeModel>
+    public class StockRepordDataService:BasicServcie<StockRepordData>
     {
-       
+        
     }
 }
