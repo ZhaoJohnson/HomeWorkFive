@@ -6,7 +6,6 @@ using FiveModel.WebModel;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -57,12 +56,10 @@ namespace FiveBusinessLayer
             int page = 1;
             do
             {
-                int ii = 1;
                 if (!isGoingPage) continue;
                 lock (LockForPage)
                 {
-                    Console.WriteLine($"第{ii}次进入，当前线程：{ Thread.CurrentThread.ManagedThreadId},当前读取的页数为：{page}");
-                    Console.WriteLine($"正在读取第{page}页的数据"+"当前线程："+ Thread.CurrentThread.ManagedThreadId);
+                    Console.WriteLine($"正在读取第{page}页的数据" + "当前线程：" + Thread.CurrentThread.ManagedThreadId);
                     StringBuilder Htmlsb = new StringBuilder();
                     Htmlsb.Append(
                         "http://datainterface.eastmoney.com//EM_DataCenter/js.aspx?type=SR&sty=GGSR&js=var%20{jsname}=");
@@ -70,7 +67,7 @@ namespace FiveBusinessLayer
                     Htmlsb.Append($"&ps={datarows}");
                     Htmlsb.Append($"&p={page}");
                     Htmlsb.Append("&mkt=0&stat=0&cmd=2&code=");
-                     
+
                     //GetEmJson(Htmlsb.ToString());
                     taskList.Add(taskFactory.StartNew(() => GetEmJson(Htmlsb.ToString())));
                     if (taskList.Count > 5)
@@ -90,7 +87,6 @@ namespace FiveBusinessLayer
                         Console.ReadKey();
                     }
                 }
-                ii++;
             } while (TheadLock);
         }
 
@@ -119,6 +115,7 @@ namespace FiveBusinessLayer
             stock.LastModifiedAt = DateTimeOffset.Now;
 
             #region 分区
+
             var codes = emDataDetailModel.secuFullCode.Split('.');
             if (string.IsNullOrEmpty(codes[0])) throw new Exception("代码有问题");
             stock.StockCodeId = codes[0];
@@ -136,7 +133,9 @@ namespace FiveBusinessLayer
                 default:
                     throw new Exception("怎么可能");
             }
-            #endregion
+
+            #endregion 分区
+
             stock.StockName = emDataDetailModel.secuName;
 
             StockReport stockReport = new StockReport();
@@ -194,8 +193,9 @@ namespace FiveBusinessLayer
 
         public void forTest()
         {
-
-
+            //string url = "http://data.eastmoney.com/report/";
+            //AsynWebRequest aw = new AsynWebRequest(url);
+            //aw.Navigate();
             Console.ReadKey();
             //string url = "http://data.eastmoney.com/report/20161108/APPH6BZpTVeKASearchReport.html";
             //GetReportData(url);

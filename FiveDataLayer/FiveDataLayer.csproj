@@ -107,7 +107,7 @@
       <DependentUpon>StockMarket.edmx</DependentUpon>
       <LastGenOutput>StockMarket.cs</LastGenOutput>
     </Content>
-    <Content Include="DbScript\fiveScript.sql" />
+    <Content Include="DbModel\DbScript\fiveScript.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.Config" />

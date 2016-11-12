@@ -45,8 +45,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BackUpProperty\AsynWebRequest.cs" />
+    <Compile Include="IWarmService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StockInfomation.cs" />
     <Compile Include="WarmHead.cs" />
+    <Compile Include="WarmService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FiveCommonLayer\FiveCommonLayer.csproj">
