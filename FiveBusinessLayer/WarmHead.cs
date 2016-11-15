@@ -193,6 +193,8 @@ namespace FiveBusinessLayer
 
         public void forTest()
         {
+            EmailHelper em = new EmailHelper();
+            EmailHelper.SendMailUseZj("头", "霸体");
             //string url = "http://data.eastmoney.com/report/";
             //AsynWebRequest aw = new AsynWebRequest(url);
             //aw.Navigate();
